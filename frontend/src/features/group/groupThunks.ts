@@ -54,3 +54,16 @@ export const groupIsPublished = createAsyncThunk<void, string, { state: RootStat
         });
     }
 );
+
+
+export const groupDeleted = createAsyncThunk<void, string, { state: RootState }>(
+    'groups/groupDeleted',
+    async (_id, {getState}) => {
+        const token = getState().users.user?.token;
+        await axiosApi.delete(`/groups/${_id}`, {
+            headers: {
+                'Authorization': token,
+            },
+        });
+    }
+);

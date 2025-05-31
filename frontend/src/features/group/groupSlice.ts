@@ -1,6 +1,6 @@
 import type {IGroup} from "../../types";
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import {createGroup, fetchAllGroups, fetchGroupById, groupIsPublished} from "./groupThunks.ts";
+import {createGroup, fetchAllGroups, fetchGroupById, groupDeleted, groupIsPublished} from "./groupThunks.ts";
 import type {RootState} from "../../app/store.ts";
 
 interface GroupsState {
@@ -10,6 +10,7 @@ interface GroupsState {
     fetchLoading: boolean;
     isPublishedLoading: boolean;
     myGroups: boolean;
+    deleteLoading: boolean;
 }
 
 const initialState: GroupsState = {
@@ -19,6 +20,7 @@ const initialState: GroupsState = {
     fetchLoading: false,
     isPublishedLoading: false,
     myGroups: false,
+    deleteLoading: false,
 }
 
 export const groupSlice = createSlice({
@@ -71,6 +73,16 @@ export const groupSlice = createSlice({
             })
             .addCase(groupIsPublished.rejected, (state) => {
                 state.isPublishedLoading = false;
+            })
+
+            .addCase(groupDeleted.pending, (state) => {
+                state.deleteLoading = true;
+            })
+            .addCase(groupDeleted.fulfilled, (state) => {
+                state.deleteLoading = false;
+            })
+            .addCase(groupDeleted.rejected, (state) => {
+                state.deleteLoading = false;
             });
     },
 })

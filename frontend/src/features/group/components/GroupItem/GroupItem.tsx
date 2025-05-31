@@ -2,7 +2,7 @@ import {Box, Button, Card, CardContent, CardMedia, Grid, Typography} from "@mui/
 import {apiUrl} from "../../../../../globalConstants.ts";
 import {useAppDispatch, useAppSelector} from "../../../../app/hooks.ts";
 import { selectUser } from "../../../users/usersSlice.ts";
-import {fetchAllGroups, groupIsPublished} from "../../groupThunks.ts";
+import {fetchAllGroups, groupDeleted, groupIsPublished} from "../../groupThunks.ts";
 import {NavLink} from "react-router-dom";
 
 interface Props {
@@ -28,6 +28,14 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
             console.error('Failed to publish:', error);
         }
     };
+
+    const handleGroupDelete  = async (_id: string) => {
+        if(_id) {
+            await dispatch(groupDeleted(_id));
+            dispatch(fetchAllGroups({}));
+        }
+    };
+
 
     return (
         <Card sx={{
@@ -92,12 +100,18 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
                     p: 2,
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1
+                    flexDirection: 'row',
+                    gap: 2,
                 }}>
                     {!isPublished && currentUser?.role === 'admin' &&
                         (
                             <Button type='submit' onClick={() => handlePublish(_id)}>Опубликовать</Button>
+                        )
+                    }
+
+                    {currentUser?.role === 'admin' &&
+                        (
+                            <Button type='submit' style={{color: 'red'}} onClick={() => handleGroupDelete(_id)}>Удалить</Button>
                         )
                     }
                 </Box>
