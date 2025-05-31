@@ -5,6 +5,7 @@ import config from "./config";
 import usersRouter from "./routers/users";
 import cookieParser from 'cookie-parser';
 import groupRouter from "./routers/groups";
+import membersGroupRouter from "./routers/memberGroup";
 
 const app = express();
 const port = 8000;
@@ -19,6 +20,7 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/groups', groupRouter);
+app.use('/members', membersGroupRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);
