@@ -11,7 +11,15 @@ export const fetchAllGroups = createAsyncThunk<IGroup[], {user?: string}>(
         const response = await axiosAPI.get<IGroup[]>(url);
         return response.data;
     }
-)
+);
+
+export const fetchGroupById = createAsyncThunk<IGroup, string>(
+    'groups/fetchGroupById',
+    async (group_id) => {
+        const response = await axiosApi.get<IGroup>(`/groups/${group_id}`);
+        return response.data || null;
+    }
+);
 
 export const createGroup = createAsyncThunk<void, GroupMutation, { state: RootState }>(
     'groups/createGroup',

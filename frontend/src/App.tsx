@@ -6,6 +6,7 @@ import Register from "./features/users/Register";
 import Login from "./features/users/Login";
 import NewGroup from "./features/group/NewGroup.tsx";
 import Group from "./features/group/Group.tsx";
+import FullGroup from "./features/group/FullGroup.tsx";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/login" element={<Login />}/>
                     <Route path="/" element={<Group />}/>
                     <Route path="/groups/new" element={<NewGroup />}/>
+                    <Route path="/groups/:id" element={<FullGroup />}/>
                     <Route path="*" element={<Typography variant="h4">Not found page</Typography>}/>
                 </Routes>
             </Container>

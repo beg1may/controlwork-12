@@ -1,10 +1,11 @@
 import type {IGroup} from "../../types";
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import {createGroup, fetchAllGroups, groupIsPublished} from "./groupThunks.ts";
+import {createGroup, fetchAllGroups, fetchGroupById, groupIsPublished} from "./groupThunks.ts";
 import type {RootState} from "../../app/store.ts";
 
 interface GroupsState {
     items: IGroup[];
+    item: IGroup | null;
     createLoading: boolean;
     fetchLoading: boolean;
     isPublishedLoading: boolean;
@@ -13,6 +14,7 @@ interface GroupsState {
 
 const initialState: GroupsState = {
     items: [],
+    item: null,
     createLoading: false,
     fetchLoading: false,
     isPublishedLoading: false,
@@ -37,6 +39,17 @@ export const groupSlice = createSlice({
             })
             .addCase(createGroup.rejected, (state) => {
                 state.createLoading = false;
+            })
+
+            .addCase(fetchGroupById.pending, (state) => {
+                state.fetchLoading = true;
+            })
+            .addCase(fetchGroupById.fulfilled, (state, {payload: group}) => {
+                state.item = group;
+                state.fetchLoading = false;
+            })
+            .addCase(fetchGroupById.rejected, (state) => {
+                state.fetchLoading = false;
             })
 
             .addCase(fetchAllGroups.pending, (state) => {
@@ -65,6 +78,7 @@ export const groupSlice = createSlice({
 export const groupsReducer = groupSlice.reducer;
 
 export const selectGroup = (state: RootState) => state.groups.items;
+export const selectOneGroup = (state: RootState) => state.groups.item;
 export const selectGroupFetchLoading = (state: RootState) => state.groups.fetchLoading;
 export const selectMyGroup = (state: RootState) => state.groups.myGroups;
 export const {setMyGroups} = groupSlice.actions;

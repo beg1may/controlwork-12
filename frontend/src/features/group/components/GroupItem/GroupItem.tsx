@@ -1,8 +1,9 @@
-import {Box, Button, Card, CardActionArea, CardContent, CardMedia, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardMedia, Grid, Typography} from "@mui/material";
 import {apiUrl} from "../../../../../globalConstants.ts";
 import {useAppDispatch, useAppSelector} from "../../../../app/hooks.ts";
 import { selectUser } from "../../../users/usersSlice.ts";
 import {fetchAllGroups, groupIsPublished} from "../../groupThunks.ts";
+import {NavLink} from "react-router-dom";
 
 interface Props {
     _id: string,
@@ -37,7 +38,7 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
             height: '100%',
             position: 'relative'
         }}>
-            <CardActionArea sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <Grid sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <CardMedia
                         component="img"
@@ -81,9 +82,7 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
                         pb: 1
                     }
                 }}>
-                    <Typography variant="h4" component="h2" gutterBottom>
-                        {title}
-                    </Typography>
+                    <Button sx={{p:0}} component={NavLink} to={`/groups/${_id}`}>{title}</Button>
 
                     <Typography variant="h6" component="h2" gutterBottom>
                         Author: {user.displayName}
@@ -102,7 +101,7 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
                         )
                     }
                 </Box>
-            </CardActionArea>
+            </Grid>
         </Card>
     );
 };
