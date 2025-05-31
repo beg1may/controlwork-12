@@ -5,7 +5,7 @@ import Group from "../models/Group";
 
 const membersGroupRouter = express.Router();
 
-membersGroupRouter.post("/join/:groupId", auth, async (req, res) => {
+membersGroupRouter.post("/join/:groupId", auth, async (req, res, next) => {
     try {
         const groupId = req.params.groupId;
         const user = (req as RequestWithUser).user;
@@ -24,7 +24,20 @@ membersGroupRouter.post("/join/:groupId", auth, async (req, res) => {
         await member.save();
         res.send(member);
     } catch (e) {
-        console.error(e);
+        next(e);
+    }
+});
+
+membersGroupRouter.delete("/leave/:groupId", auth, async (req, res, next) => {
+    try {
+        const groupId = req.params.groupId;
+        const user = (req as RequestWithUser).user;
+
+        await MemberGroup.deleteOne({ group: groupId, user: user._id });
+
+        res.send({ message: "Group deleted successfully" });
+    } catch (e) {
+        next(e);
     }
 });
 
