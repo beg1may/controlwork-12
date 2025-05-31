@@ -4,6 +4,7 @@ import cors from "cors";
 import config from "./config";
 import usersRouter from "./routers/users";
 import cookieParser from 'cookie-parser';
+import groupRouter from "./routers/groups";
 
 const app = express();
 const port = 8000;
@@ -17,6 +18,7 @@ app.use(cookieParser())
 app.use(express.static('public'));
 app.use(express.json());
 app.use('/users', usersRouter);
+app.use('/groups', groupRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);
