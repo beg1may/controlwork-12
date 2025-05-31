@@ -50,3 +50,12 @@ export interface GroupMutation {
     description: string;
     image: File;
 }
+
+export interface MemberGroup {
+    _id: string;
+    user: {
+        _id: string;
+        displayName: string;
+    },
+    group: string
+}

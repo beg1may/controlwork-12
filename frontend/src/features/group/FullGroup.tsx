@@ -1,17 +1,19 @@
-import {Box, CardMedia, Divider, Typography} from "@mui/material";
+import {Box, Button, CardMedia, Divider, Typography} from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {selectGroupFetchLoading, selectOneGroup} from "./groupSlice.ts";
 import {useParams } from "react-router-dom";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import {fetchGroupById} from "./groupThunks.ts";
 import Spinner from "../../components/UI/Spinner/Spinner.tsx";
 import { apiUrl } from "../../../globalConstants.ts";
 import Grid from "@mui/material/Grid";
+import {joinMemberGroup} from "../memberGroup/memberGroupThunks.ts";
 
 const FullGroup = () => {
     const dispatch = useAppDispatch();
     const group = useAppSelector(selectOneGroup);
     const fetchLoading = useAppSelector(selectGroupFetchLoading);
+    const [isJoined, setIsJoined] = useState(false);
     const {id} = useParams();
 
     useEffect(() => {
@@ -19,6 +21,17 @@ const FullGroup = () => {
             dispatch(fetchGroupById(id));
         }
     }, [dispatch, id]);
+
+    const handleJoinGroup = async () => {
+        if (id) {
+            try {
+                await dispatch(joinMemberGroup(id)).unwrap();
+                setIsJoined(true);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
 
     return (
         <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
@@ -52,6 +65,15 @@ const FullGroup = () => {
                     <Typography variant="body1" color="text.secondary" sx={{ mb: 2, lineHeight: 1.6 }}>
                         {group.description}
                     </Typography>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={isJoined}
+                        onClick={handleJoinGroup}
+                    >
+                        {isJoined ? "Вы уже в группе" : "Вступить в группу"}
+                    </Button>
                 </Grid>
             </Grid>
         ) : (
