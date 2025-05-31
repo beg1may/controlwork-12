@@ -3,6 +3,7 @@ import auth, {RequestWithUser} from "../middleware/auth";
 import {imagesUpload} from "../middleware/multer";
 import {Error} from "mongoose";
 import Group from "../models/Group";
+import permit from "../middleware/permit";
 
 const groupRouter = express.Router();
 
@@ -13,7 +14,7 @@ groupRouter.get("/", async (req, res, next) => {
 
         if (user_id) filter.user = user_id;
 
-        const groups = await Group.find(filter)
+        const groups = await Group.find(filter).populate("user", "displayName");
         res.send(groups);
     } catch (error) {
         next(error);
@@ -42,5 +43,31 @@ groupRouter.post("/", auth, imagesUpload.single('image'), async (req, res, next)
         next(error);
     }
 });
+
+groupRouter.patch("/:id/togglePublished", auth, permit('admin'), async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        if (!id) {
+            res.status(404).send({ message: 'Group id must be in req params' });
+            return;
+        }
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            res.status(404).send({ message: 'Group not found' });
+            return;
+        }
+
+        group.isPublished = !group.isPublished;
+
+        await group.save();
+        res.send(group);
+
+    } catch (error) {
+        next(error);
+    }
+})
 
 export default groupRouter;

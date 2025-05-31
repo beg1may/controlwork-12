@@ -5,6 +5,7 @@ import {Route, Routes } from "react-router-dom";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
 import NewGroup from "./features/group/NewGroup.tsx";
+import Group from "./features/group/Group.tsx";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
                 <Routes>
                     <Route path="/register" element={<Register />}/>
                     <Route path="/login" element={<Login />}/>
+                    <Route path="/" element={<Group />}/>
                     <Route path="/groups/new" element={<NewGroup />}/>
                     <Route path="*" element={<Typography variant="h4">Not found page</Typography>}/>
                 </Routes>

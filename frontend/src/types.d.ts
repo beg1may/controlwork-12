@@ -35,14 +35,18 @@ export interface GlobalError {
 
 export interface IGroup {
     _id: string;
-    user: string;
+    user: {
+        _id: string;
+        displayName: string;
+    }
     title: string;
     description: string;
-    image: File | null;
+    image: File;
+    isPublished: boolean;
 }
 
 export interface GroupMutation {
     title: string;
     description: string;
-    image: File | null;
+    image: File;
 }

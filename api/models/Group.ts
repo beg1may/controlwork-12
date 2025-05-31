@@ -28,6 +28,10 @@ const GroupSchema = new Schema({
         type: String,
         required: true,
     },
+    isPublished: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const Group = mongoose.model("Group", GroupSchema);
