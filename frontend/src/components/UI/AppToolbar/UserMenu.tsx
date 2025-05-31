@@ -45,6 +45,9 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 <MenuItem onClick={handleLogout}>
                     <Button component={NavLink} to='/logout'>Logout</Button>
                 </MenuItem>
+                <MenuItem>
+                    <Button component={NavLink} to='/groups/new' onClick={handleClose}>New group</Button>
+                </MenuItem>
             </Menu>
         </>
     );

@@ -14,7 +14,7 @@ groupRouter.post("/", auth, imagesUpload.single('image'), async (req, res, next)
             user: user._id,
             title: req.body.title,
             description: req.body.description,
-            image: 'images/' + req.file?.filename,
+            image: req.file ? 'images/' + req.file.filename : null,
         });
 
         await group.save();

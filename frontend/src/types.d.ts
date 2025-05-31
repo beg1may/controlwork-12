@@ -32,3 +32,17 @@ export interface LoginMutation {
 export interface GlobalError {
     error: string;
 }
+
+export interface IGroup {
+    _id: string;
+    user: string;
+    title: string;
+    description: string;
+    image: File | null;
+}
+
+export interface GroupMutation {
+    title: string;
+    description: string;
+    image: File | null;
+}

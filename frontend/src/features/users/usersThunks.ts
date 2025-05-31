@@ -37,6 +37,7 @@ export const login = createAsyncThunk<
     async (loginForm, {rejectWithValue}) => {
         try {
             const response = await axiosApi.post<RegisterAndLoginResponse>('/users/sessions', loginForm);
+            console.log(response.data.user);
             return response.data.user;
         } catch (error) {
             if (isAxiosError(error) && error.response && error.response.status === 400) {
