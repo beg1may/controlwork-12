@@ -19,3 +19,20 @@ export const joinMemberGroup = createAsyncThunk<MemberGroup, string, { state: Ro
         }
     }
 );
+
+export const fetchGroupMembers = createAsyncThunk<MemberGroup[], string, { state: RootState }>(
+    'memberGroups/fetchGroupMembers',
+    async (groupId, {getState}) => {
+        try {
+            const token = getState().users.user?.token;
+            const response = await axiosAPI.get(`/members/${groupId}`, {
+                headers: {
+                    'Authorization': token,
+                },
+            });
+            return response.data;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+);

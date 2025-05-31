@@ -1,7 +1,7 @@
 import type {MemberGroup} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import type {RootState} from "../../app/store.ts";
-import {joinMemberGroup} from "./memberGroupThunks.ts";
+import {fetchGroupMembers, joinMemberGroup} from "./memberGroupThunks.ts";
 
 interface MemberGroupState {
     items: MemberGroup[];
@@ -30,6 +30,17 @@ export const MemberGroupSlice = createSlice({
             })
             .addCase(joinMemberGroup.rejected, (state) => {
                 state.createLoading = false;
+            })
+
+            .addCase(fetchGroupMembers.pending, (state) => {
+                state.fetchLoading = true;
+            })
+            .addCase(fetchGroupMembers.fulfilled, (state, {payload: members}) => {
+                state.items = members;
+                state.fetchLoading = false;
+            })
+            .addCase(fetchGroupMembers.rejected, (state) => {
+                state.fetchLoading = false;
             })
     },
 });

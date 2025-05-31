@@ -2,31 +2,39 @@ import {Box, Button, CardMedia, Divider, Typography} from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {selectGroupFetchLoading, selectOneGroup} from "./groupSlice.ts";
 import {useParams } from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {fetchGroupById} from "./groupThunks.ts";
 import Spinner from "../../components/UI/Spinner/Spinner.tsx";
 import { apiUrl } from "../../../globalConstants.ts";
 import Grid from "@mui/material/Grid";
-import {joinMemberGroup} from "../memberGroup/memberGroupThunks.ts";
+import {fetchGroupMembers, joinMemberGroup} from "../memberGroup/memberGroupThunks.ts";
+import MemberGroup from "../memberGroup/MemberGroup.tsx";
+import {selectUser} from "../users/usersSlice.ts";
+import {selectMemberGroup} from "../memberGroup/memberGroupSlice.ts";
 
 const FullGroup = () => {
     const dispatch = useAppDispatch();
     const group = useAppSelector(selectOneGroup);
     const fetchLoading = useAppSelector(selectGroupFetchLoading);
-    const [isJoined, setIsJoined] = useState(false);
+    const user = useAppSelector(selectUser);
+    const members = useAppSelector(selectMemberGroup);
     const {id} = useParams();
 
     useEffect(() => {
         if(id) {
             dispatch(fetchGroupById(id));
+            dispatch(fetchGroupMembers(id));
         }
     }, [dispatch, id]);
+
+    const isMember = user && members.some(m => m.user._id === user._id);
+    const isOwner = user && group && group.user._id === user._id;
 
     const handleJoinGroup = async () => {
         if (id) {
             try {
                 await dispatch(joinMemberGroup(id)).unwrap();
-                setIsJoined(true);
+                dispatch(fetchGroupMembers(id));
             } catch (e) {
                 console.error(e);
             }
@@ -66,15 +74,20 @@ const FullGroup = () => {
                         {group.description}
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        disabled={isJoined}
-                        onClick={handleJoinGroup}
-                    >
-                        {isJoined ? "Вы уже в группе" : "Вступить в группу"}
-                    </Button>
+                    {!isOwner && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={isMember}
+                            onClick={handleJoinGroup}
+                        >
+                            {isMember ? "Вы уже в группе" : "Вступить в группу"}
+                        </Button>
+                    )}
+
+                    {(isOwner || isMember) && <MemberGroup />}
                 </Grid>
+                <MemberGroup />
             </Grid>
         ) : (
             <Typography variant="h6" align="center" sx={{ mt: 4 }}>
