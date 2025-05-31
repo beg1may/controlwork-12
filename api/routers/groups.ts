@@ -78,6 +78,24 @@ groupRouter.patch("/:id/togglePublished", auth, permit('admin'), async (req, res
     } catch (error) {
         next(error);
     }
+});
+
+groupRouter.delete("/:id", auth, permit('admin'), async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            res.status(404).send('Group not found');
+            return;
+        }
+
+        await Group.findByIdAndDelete(id);
+        res.send({message:"Group deleted successfully."});
+    } catch (error) {
+        next(error);
+    }
 })
 
 export default groupRouter;
