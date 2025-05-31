@@ -45,9 +45,9 @@ export const createGroup = createAsyncThunk<void, GroupMutation, { state: RootSt
 
 export const groupIsPublished = createAsyncThunk<void, string, { state: RootState }>(
     'groups/groupIsPublished',
-    async (_id, {getState}) => {
+    async (groupId, {getState}) => {
         const token = getState().users.user?.token;
-        await axiosApi.patch(`/groups/${_id}/togglePublished`, null, {
+        await axiosApi.patch(`/groups/${groupId}/togglePublished`, null, {
             headers: {
                 'Authorization': token,
             },
@@ -58,9 +58,9 @@ export const groupIsPublished = createAsyncThunk<void, string, { state: RootStat
 
 export const groupDeleted = createAsyncThunk<void, string, { state: RootState }>(
     'groups/groupDeleted',
-    async (_id, {getState}) => {
+    async (groupId, {getState}) => {
         const token = getState().users.user?.token;
-        await axiosApi.delete(`/groups/${_id}`, {
+        await axiosApi.delete(`/groups/${groupId}`, {
             headers: {
                 'Authorization': token,
             },

@@ -7,7 +7,12 @@ import {fetchGroupById} from "./groupThunks.ts";
 import Spinner from "../../components/UI/Spinner/Spinner.tsx";
 import { apiUrl } from "../../../globalConstants.ts";
 import Grid from "@mui/material/Grid";
-import {fetchGroupMembers, joinMemberGroup} from "../memberGroup/memberGroupThunks.ts";
+import {
+    deleteGroupMember,
+    fetchGroupMembers,
+    joinMemberGroup,
+    leaveMemberGroup
+} from "../memberGroup/memberGroupThunks.ts";
 import MemberGroup from "../memberGroup/MemberGroup.tsx";
 import {selectUser} from "../users/usersSlice.ts";
 import {selectMemberGroup} from "../memberGroup/memberGroupSlice.ts";
@@ -18,26 +23,43 @@ const FullGroup = () => {
     const fetchLoading = useAppSelector(selectGroupFetchLoading);
     const user = useAppSelector(selectUser);
     const members = useAppSelector(selectMemberGroup);
-    const {id} = useParams();
+    const {groupId} = useParams();
 
     useEffect(() => {
-        if(id) {
-            dispatch(fetchGroupById(id));
-            dispatch(fetchGroupMembers(id));
+        if(groupId) {
+            dispatch(fetchGroupById(groupId));
+            dispatch(fetchGroupMembers(groupId));
         }
-    }, [dispatch, id]);
+    }, [dispatch, groupId]);
 
     const isMember = user && members.some(m => m.user._id === user._id);
     const isOwner = user && group && group.user._id === user._id;
 
     const handleJoinGroup = async () => {
-        if (id) {
+        if (groupId) {
             try {
-                await dispatch(joinMemberGroup(id)).unwrap();
-                dispatch(fetchGroupMembers(id));
+                await dispatch(joinMemberGroup(groupId)).unwrap();
+                dispatch(fetchGroupMembers(groupId));
             } catch (e) {
                 console.error(e);
             }
+        }
+    };
+
+    const handleLeaveGroup = async () => {
+        if (groupId) {
+            try {
+                await dispatch(leaveMemberGroup(groupId)).unwrap();
+                dispatch(fetchGroupMembers(groupId));
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+
+    const handleDelete = (userId: string) => {
+        if (groupId && userId) {
+            dispatch(deleteGroupMember({ groupId, userId }));
         }
     };
 
@@ -75,19 +97,34 @@ const FullGroup = () => {
                     </Typography>
 
                     {!isOwner && (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            disabled={isMember}
-                            onClick={handleJoinGroup}
-                        >
-                            {isMember ? "Вы уже в группе" : "Вступить в группу"}
-                        </Button>
+                        <>
+                            {isMember ? (
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={handleLeaveGroup}
+                                >
+                                    Выйти из группы
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleJoinGroup}
+                                >
+                                    Вступить в группу
+                                </Button>
+                            )}
+                        </>
                     )}
 
-                    {(isOwner || isMember) && <MemberGroup />}
+                    {(isOwner || isMember) && (
+                        <MemberGroup
+                            onDeleteMember={isOwner ? handleDelete : undefined}
+                        />
+                    )}
                 </Grid>
-                <MemberGroup />
+                {(isOwner || isMember) && <MemberGroup/>}
             </Grid>
         ) : (
             <Typography variant="h6" align="center" sx={{ mt: 4 }}>

@@ -1,12 +1,13 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice.ts";
-import {selectGroup, selectGroupFetchLoading, selectMyGroup, setMyGroups} from "./groupSlice.ts";
+import {selectGroup, selectGroupFetchLoading, setMyGroups} from "./groupSlice.ts";
 import {useEffect} from "react";
 import {fetchAllGroups} from "./groupThunks.ts";
 import {Button, Grid, Typography } from "@mui/material";
 import Spinner from "../../components/UI/Spinner/Spinner.tsx";
 import type {IGroup} from "../../types";
 import GroupItem from "./components/GroupItem/GroupItem.tsx";
+import {selectMyGroup} from "../memberGroup/memberGroupSlice.ts";
 
 const Group = () => {
     const dispatch = useAppDispatch();
@@ -71,6 +72,23 @@ const Group = () => {
                         }}
                     >
                         All groups
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Button
+                        variant={!myGroups ? "contained" : "outlined"}
+                        onClick={() => dispatch(setMyGroups(false))}
+                        sx={{
+                            bgcolor: !myGroups ? "black" : "transparent",
+                            color: !myGroups ? "white" : "black",
+                            borderColor: "black",
+                            '&:hover': {
+                                bgcolor: !myGroups ? "#333" : "rgba(0, 0, 0, 0.04)",
+                                borderColor: "black",
+                            }
+                        }}
+                    >
+                        Groups I'm in
                     </Button>
                 </Grid>
             </Grid>

@@ -2,7 +2,6 @@ import express from "express";
 import auth, {RequestWithUser} from "../middleware/auth";
 import MemberGroup from "../models/MemberGroup";
 import Group from "../models/Group";
-import permit from "../middleware/permit";
 
 const membersGroupRouter = express.Router();
 
@@ -54,6 +53,17 @@ membersGroupRouter.get("/:groupId", auth, async (req, res, next) => {
         const memberGroup = await MemberGroup.find({group: groupId}).populate("user", "displayName");
 
         res.send(memberGroup);
+    } catch (e) {
+        next(e);
+    }
+});
+
+membersGroupRouter.get("/", auth, async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+
+        const myGroups = await MemberGroup.find({ user: user._id }).populate("group", "title");
+        res.send(myGroups);
     } catch (e) {
         next(e);
     }
