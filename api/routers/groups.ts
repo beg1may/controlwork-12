@@ -6,6 +6,20 @@ import Group from "../models/Group";
 
 const groupRouter = express.Router();
 
+groupRouter.get("/", async (req, res, next) => {
+    try {
+        const user_id = req.query.user as string
+        const filter: {user?: string} = {};
+
+        if (user_id) filter.user = user_id;
+
+        const groups = await Group.find(filter)
+        res.send(groups);
+    } catch (error) {
+        next(error);
+    }
+})
+
 groupRouter.post("/", auth, imagesUpload.single('image'), async (req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
