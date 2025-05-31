@@ -19,7 +19,17 @@ groupRouter.get("/", async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-})
+});
+
+groupRouter.get("/:id", async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const groups = await Group.findById(id).populate("user", "displayName");
+        res.send(groups);
+    } catch (error) {
+        next(error);
+    }
+});
 
 groupRouter.post("/", auth, imagesUpload.single('image'), async (req, res, next) => {
     try {
