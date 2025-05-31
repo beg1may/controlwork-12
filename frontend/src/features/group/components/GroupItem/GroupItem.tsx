@@ -85,7 +85,7 @@ const GroupItem: React.FC<Props> = ({_id, user, title, image, isPublished}) => {
                     <Button sx={{p:0}} component={NavLink} to={`/groups/${_id}`}>{title}</Button>
 
                     <Typography variant="h6" component="h2" gutterBottom>
-                        Author: {user.displayName}
+                        Author: <Button sx={{p:0}} component={NavLink} to={`/groups/user/${user._id}`}>{user.displayName}</Button>
                     </Typography>
                 </CardContent>
                 <Box sx={{
